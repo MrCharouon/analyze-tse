@@ -3,6 +3,7 @@ import requests
 import subprocess
 
 
+
 exit_code = subprocess.call('/home/ali/tmp/analyze-tse/directory.sh')
 # print(exit_code)
 
@@ -84,7 +85,7 @@ import csv
 import time
 import math
 
-stock_keys = [ 'خودرو', 'كگل', 'شستا', 'فولاد', 'شبندر' ]
+stock_keys = [ 'خودرو', 'شپنا', 'تفارس', 'خساپا', 'شستا','شتران','خمحركه','رافزا','سآبيك','ددانا','كماسه' ]
 watch_df = df[df[2].isin(stock_keys)]
 
 watch_df.to_csv('/tmp/watchlist/watch.csv', index=False)
@@ -106,13 +107,12 @@ numbers_final = watch_df[6].tolist()
 # Volume
 numbers_final_v = watch_df[9].tolist()
 
-millnames = ['',' Thousand',' Million',' Billion',' Trillion']
+millnames = ['',' Th',' M',' B',' T']
 
 def millify(n):
     n = float(n)
     millidx = max(0,min(len(millnames)-1,
                         int(math.floor(0 if n == 0 else math.log10(abs(n))/3))))
-
     return '{:.0f}{}'.format(n / 10**(3 * millidx), millnames[millidx])
 
 n = 0
@@ -124,15 +124,25 @@ for i in range(len(numbers_final_v)):
     n+=1
 
 m = 0
+
+list_final = []
+list_latest = []
+list_numbers_list = []
+list_sign = []
+list_Volume_list = []
+# list_low_high= []
+# list_low= []
+# list_high= []
+list_queue = []
 for j in range (len(numbers_list)):
     if (numbers_final[m] == numbers_latest[m]):
         #sign = "⚪️"
         state = "="
-        sign = "⏸"
+        sign = " * "
     elif (numbers_final[m] > numbers_latest[m]):
         #sign = "🔴"
         state = ">"
-        sign = "⏬"
+        sign = ""
     elif (numbers_final[m] < numbers_latest[m]):
         #sign = "🟢"
         state = "<"
@@ -140,20 +150,50 @@ for j in range (len(numbers_list)):
 
     final = (numbers_final[m])
     final = f"{int(final):000,}"
+    list_final.append(final)
     latest = (numbers_latest[m])
     latest = f"{int(latest):000,}"
+    list_latest.append(latest)
+
+    list_numbers_list.append(numbers_list[m])
+    list_sign.append(sign)
+
+    list_Volume_list.append(Volume_list[m])
     high = (Highـrange[m])
     high = round(float(high))
     high = f"{(high):000,}"
+    # list_high.append(high)
 
     low = (Lowـrange[m])
     low = round(float(low))
     low = f"{(low):000,}"
-    print(f"(L={low}  (final={final}{state}latest={latest})  H={high} ,{Volume_list[m]}) = {sign} {numbers_list[m]}")
+    # list_low.append(low)
+
+    # list_low_high = list_low + list_high
+
+    if(high == latest):
+        list_queue.append("KH")
+    elif(low == latest):
+        list_queue.append("FR")
+    else:
+        list_queue.append("")
+
+
+    # print(f"(L={low}  (final={final}{state}latest={latest})  H={high} ,{Volume_list[m]}) = {sign} {numbers_list[m]}")
     m+=1
-    time.sleep(0.25)
+    # time.sleep(0.25)
 
 
+from prettytable import PrettyTable
+columns = ["Final","Latest", "State", "Volume", "Queue", "Name"]
+newTable = PrettyTable()
 
+# Add Columns
+newTable.add_column(columns[0], list_final)
+newTable.add_column(columns[1], list_latest)
+newTable.add_column(columns[2], list_sign)
+newTable.add_column(columns[3], list_Volume_list)
+newTable.add_column(columns[4], list_queue)
+newTable.add_column(columns[5], list_numbers_list)
 
-
+print(newTable)
