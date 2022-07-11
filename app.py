@@ -183,17 +183,23 @@ for j in range (len(numbers_list)):
     m+=1
     # time.sleep(0.25)
 
+id_list = []
+m = 1
+for j in range(len(numbers_list)):
+    id_list.append(str(m))
+    m+=1
 
 from prettytable import PrettyTable
-columns = ["Final","Latest", "State", "Volume", "Queue", "Name"]
+columns = ["Id", "Final","Latest", "State", "Volume", "Queue", "Name"]
 newTable = PrettyTable()
 
 # Add Columns
-newTable.add_column(columns[0], list_final)
-newTable.add_column(columns[1], list_latest)
-newTable.add_column(columns[2], list_sign)
-newTable.add_column(columns[3], list_Volume_list)
-newTable.add_column(columns[4], list_queue)
-newTable.add_column(columns[5], list_numbers_list)
+newTable.add_column(columns[0], id_list)
+newTable.add_column(columns[1], list_final)
+newTable.add_column(columns[2], list_latest)
+newTable.add_column(columns[3], list_sign)
+newTable.add_column(columns[4], list_Volume_list)
+newTable.add_column(columns[5], list_queue)
+newTable.add_column(columns[6], list_numbers_list)
 
 print(newTable)
