@@ -41,5 +41,5 @@ class update_db():
         records = cursor.fetchall()
         for row in records:
             update_invest.append(row[1])
-        conn.close()
+        # conn.close()
         return (update_invest)
